@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Multimedia Content Automation{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-600 fixed top-0 inset-x-0 p-4 z-10">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-white text-2xl font-bold">Multimedia Content Automation</a>
+            <div class="space-x-4">
+                <select name="Video Automation" class="bg-gray-600 text-white rounded-lg" onchange="location = this.value;" >
+                    <option value="" disabled selected>Video Automation</option>
+                    <option value="/">Factual Video</option>
+                    <option value="/story">Story Video</option>
+                    <option value="/ad">Advertisement Video</option>
+                </select>                           
+                <a href="/ppt" class="text-white hover:text-gray-300">Power Point Automation</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4 flex-grow pt-20">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+</body>
+
+</html>

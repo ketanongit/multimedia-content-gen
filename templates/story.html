@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+
+{% block title %}Generate Story Video{% endblock %}
+
+{% block content %}
+<div class="flex flex-col lg:flex-row justify-center items-center lg:space-x-12">
+    <!-- Form Section -->
+    <div class="w-full max-w-lg bg-white rounded-lg shadow-lg p-8 mb-8 lg:mb-0">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Generate A Story Video</h1>
+
+        <form id="storyForm" class="space-y-6">
+            <div>
+                <label for="keyword" class="block text-gray-700 text-lg font-medium">Keyword/Idea for the story</label>
+                <input type="text" id="keyword" name="keyword"
+                    class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-gray-500"
+                    placeholder="Enter a keyword or idea" required>
+            </div>
+            <div>
+                <label for="speed" class="block text-gray-700 text-lg font-medium">Speech speed (e.g., 1.0 for normal)</label>
+                <input type="text" id="speed" name="speed"
+                    class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-gray-500"
+                    placeholder="Enter speech speed" required>
+            </div>
+            <div>
+                <label for="music_prompt" class="block text-gray-700 text-lg font-medium">Music prompt</label>
+                <input type="text" id="music_prompt" name="music_prompt"
+                    class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-gray-500"
+                    placeholder="Enter a music prompt" required>
+            </div>
+            <div>
+                <button type="button" id="generateScriptBtn"
+                    class="w-full bg-gray-800 text-white py-3 px-6 rounded-lg shadow-sm hover:bg-gray-900 transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500">Generate Script</button>
+            </div>
+
+            <!-- Spinner while generating script (Initially hidden) -->
+            <div id="scriptSpinner" class="hidden flex justify-center items-center mt-4">
+                <svg class="animate-spin h-6 w-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <p class="text-gray-700 ml-2">Generating script, please wait...</p>
+            </div>
+        </form>
+
+        <!-- Script Display Section (Initially hidden) -->
+        <div id="storyScriptContainer" class="hidden">
+            <textarea id="storyScript" class="w-full mt-6 p-4 border border-gray-300 rounded-lg shadow-sm" rows="8"></textarea>
+            <div class="mt-4">
+                <button type="button" id="generateVideoBtn"
+                    class="w-full bg-green-500 text-white py-3 px-6 rounded-lg shadow-sm hover:bg-green-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500">Generate Video</button>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Video Display Section (Initially hidden) -->
+    <div class="w-full max-w-lg bg-white rounded-lg shadow-lg p-8 hidden" id="videoSection">
+        <!-- Spinner to show while video is being generated -->
+        <div id="spinner" class="flex flex-col items-center mt-6">
+            <svg class="animate-spin h-12 w-12 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            <p class="text-gray-700 mt-4 text-lg font-medium">Generating your video, please wait...</p>
+        </div>
+
+        <!-- Video Display Box with Download Button (Hidden by default) -->
+        <div id="video-container" class="hidden">
+            <div class="">
+                <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Your Story Video</h1>
+                <video id="generatedVideo" class="w-full rounded-lg mb-4" controls></video>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const storyForm = document.getElementById('storyForm');
+    const storyScriptContainer = document.getElementById('storyScriptContainer');
+    const generateScriptBtn = document.getElementById('generateScriptBtn');
+    const scriptSpinner = document.getElementById('scriptSpinner');
+    const storyScript = document.getElementById('storyScript');
+
+    generateScriptBtn.addEventListener('click', async () => {
+        const formData = {
+            keyword: document.getElementById('keyword').value,
+            speed: document.getElementById('speed').value,
+            music_prompt: document.getElementById('music_prompt').value
+        };
+
+        // Show the spinner and hide the generate script button
+        scriptSpinner.classList.remove('hidden');
+        generateScriptBtn.classList.add('hidden');
+
+        const response = await fetch('/generate_story_script', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+        storyScript.value = data.story_script;
+
+        // Hide spinner and show the script
+        scriptSpinner.classList.add('hidden');
+        storyScriptContainer.classList.remove('hidden');
+    });
+    const generateVideoBtn = document.getElementById('generateVideoBtn');
+const videoSection = document.getElementById('videoSection');
+const spinner = document.getElementById('spinner');
+const videoContainer = document.getElementById('video-container');
+const generatedVideo = document.getElementById('generatedVideo');
+
+generateVideoBtn.addEventListener('click', async () => {
+    const formData = {
+        keyword: document.getElementById('keyword').value,
+        speed: document.getElementById('speed').value,
+        music_prompt: document.getElementById('music_prompt').value,
+        modified_script: document.getElementById('storyScript').value  // Include the modified script from textarea
+    };
+
+    // Hide the script container and show spinner while video is being generated
+    storyScriptContainer.classList.add('hidden');
+    videoSection.classList.remove('hidden');
+    videoContainer.classList.add('hidden');
+    spinner.classList.remove('hidden');
+
+    const response = await fetch('/generate_story_video', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+    const videoUrl = data.video_url;
+
+    // Hide spinner and show video container
+    spinner.classList.add('hidden');
+    videoContainer.classList.remove('hidden');
+
+    // Set video source
+    generatedVideo.src = videoUrl;
+});
+
+</script>
+{% endblock %}
