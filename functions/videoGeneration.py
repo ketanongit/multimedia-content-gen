@@ -1,26 +1,32 @@
-
-import re
-from pydub import AudioSegment
+# functions/videoGeneration.py
+from PIL import Image
 from moviepy.editor import ImageClip, AudioFileClip, concatenate_videoclips, CompositeVideoClip
+from pydub import AudioSegment
 from utils.query import query_music
 from functions.subTitle import create_text_clip, transcribe_audio
+import re
 
-#video creation
-def create_video_with_animated_subtitles(audio_file_path, images, cleaned_text, num_images, music_prompt):
+# video creation
+def create_video_with_animated_subtitles(audio_file_path, image_paths, cleaned_text, num_images, music_prompt):
     sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', cleaned_text)
     audio_segment = AudioSegment.from_file(audio_file_path)
     image_duration = audio_segment.duration_seconds / num_images
-    
+
     # Ensure we have exactly the required number of images
-    if len(images) > num_images:
-        images = images[:num_images]
+    if len(image_paths) > num_images:
+        image_paths = image_paths[:num_images]
     
     # Create ImageClips for each image
     clips = []
-    for img in images:
-        img.save("assets/temp_image.png")
-        clip = ImageClip("assets/temp_image.png", duration=image_duration)
-        clips.append(clip)
+    for image_path in image_paths:
+        try:
+            # Open the image file and create an ImageClip
+            img = Image.open(image_path)
+            img.save("assets/temp_image.png")  # Save it temporarily if needed
+            clip = ImageClip("assets/temp_image.png", duration=image_duration)
+            clips.append(clip)
+        except Exception as e:
+            print(f"Failed to load or save image from path '{image_path}': {e}")
     
     # Concatenate image clips
     video = concatenate_videoclips(clips, method="compose")

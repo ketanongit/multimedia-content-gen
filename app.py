@@ -1,3 +1,4 @@
+#app.py
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from functions.funFact import generate_fun_fact
 from functions.story import generate_story

@@ -1,3 +1,4 @@
+#functions/subTitle.py
 from PIL import Image, ImageDraw, ImageFont
 import whisper
 from moviepy.editor import ImageClip

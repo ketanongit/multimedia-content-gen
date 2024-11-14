@@ -1,3 +1,4 @@
+#utils/query.py
 import requests
 
 TEXT_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
@@ -5,7 +6,7 @@ IMAGE_API_URL = "https://api-inference.huggingface.co/models/black-forest-labs/F
 MUSIC_URL = "https://api-inference.huggingface.co/models/facebook/musicgen-small"
 DOMAIN_API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-mnli"  # For zero-shot classification
 
-HEADERS = {"Authorization": "Bearer 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"}
+HEADERS = {"Authorization": "Bearer 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"}
 
 def query_text(payload):
     response = requests.post(TEXT_API_URL, headers=HEADERS, json=payload)
