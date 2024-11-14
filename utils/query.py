@@ -6,7 +6,7 @@ IMAGE_API_URL = "https://api-inference.huggingface.co/models/black-forest-labs/F
 MUSIC_URL = "https://api-inference.huggingface.co/models/facebook/musicgen-small"
 DOMAIN_API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-mnli"  # For zero-shot classification
 
-HEADERS = {"Authorization": "Bearer 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"}
+HEADERS = {"Authorization": "Bearer YOUR_HUGGINGFACE_KEY"}
 
 def query_text(payload):
     response = requests.post(TEXT_API_URL, headers=HEADERS, json=payload)
