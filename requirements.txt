@@ -1,0 +1,8 @@
+flask==3.0.0
+Pillow==10.3.0
+moviepy==2.0.0
+pydub==0.25.1
+requests==2.31.0
+spacy==3.7.2
+gtts==2.5.1
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1.tar.gz#egg=en_core_web_sm
